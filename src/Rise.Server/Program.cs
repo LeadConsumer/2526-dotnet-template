@@ -30,23 +30,14 @@ try
         {
             var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection") ??
                                    throw new InvalidOperationException("Connection string 'DatabaseConnection' not found.");
-            
-            // Deze methode werkt altijd direct zonder extra imports:
-            var serverVersion = ServerVersion.Parse("11.4.0-mariadb"); 
-            
-            o.UseMySql(connectionString, serverVersion, mySqlOptions =>
-            {
-                mySqlOptions.MigrationsAssembly("Rise.Persistence");
-            });
-            
+            o.UseSqlite(connectionString); // Swap Sqlite for your database provider (e.g. Sql Server, MySQL, PostgreSQL, etc.).
             o.EnableDetailedErrors();
             if (builder.Environment.IsDevelopment())
             {
-                o.EnableSensitiveDataLogging();
+                o.EnableSensitiveDataLogging(); // only enabled in development.
             }
-            o.UseTriggers(options => options.AddTrigger<EntityBeforeSaveTrigger>());
+            o.UseTriggers(options => options.AddTrigger<EntityBeforeSaveTrigger>()); // Handles all UpdatedAt, CreatedAt stuff.
         })
-
         .ConfigureApplicationCookie(o =>
         {
             o.Events.OnRedirectToLogin = ctx =>
