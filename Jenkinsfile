@@ -1,4 +1,4 @@
-```groovy
+groovy
 node {
     stage('Preparation') {
         checkout scm
@@ -51,4 +51,3 @@ node {
         '''
     }
 }
-```
